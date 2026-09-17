@@ -18,12 +18,18 @@ class ModelConfig:
 
 @dataclass(frozen=True)
 class LLMResponse:
-    text: str
+    content: str
     latency_seconds: float
     prompt_tokens: int | None
     completion_tokens: int | None
     total_tokens: int | None
     estimated_cost: float | None
+    model_name: str
+    provider: str
+
+    @property
+    def text(self) -> str:
+        return self.content
 
 
 class LLMService:
@@ -52,4 +58,7 @@ class LLMService:
         completion_tokens = usage.completion_tokens if usage else None
         total_tokens = usage.total_tokens if usage else None
         cost = calculate_cost(config.model, prompt_tokens or 0, completion_tokens or 0)
-        return LLMResponse(response.choices[0].message.content or "", latency, prompt_tokens, completion_tokens, total_tokens, cost)
+        content = response.choices[0].message.content
+        if not content:
+            raise ValueError("LLM returned an empty response.")
+        return LLMResponse(content, latency, prompt_tokens, completion_tokens, total_tokens, cost, config.model, config.provider)

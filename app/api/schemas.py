@@ -1,6 +1,6 @@
 """Pydantic API contracts."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class ModelConfigRequest(BaseModel):
@@ -10,11 +10,18 @@ class ModelConfigRequest(BaseModel):
     temperature: float = Field(default=0.0, ge=0, le=2)
     system_prompt: str = "Answer accurately and concisely."
 
+    @field_validator("name", "provider", "model")
+    @classmethod
+    def required_text(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("must not be blank")
+        return value.strip()
+
 
 class EvaluateRequest(BaseModel):
     dataset_path: str = "data/sample_eval_dataset.csv"
     dataset_name: str = "sample_eval_dataset.csv"
-    configuration: ModelConfigRequest = ModelConfigRequest()
+    configuration: ModelConfigRequest = Field(default_factory=ModelConfigRequest)
     run_name: str = "Evaluation run"
 
 
@@ -29,3 +36,7 @@ class RegressionRequest(BaseModel):
     baseline_run_id: int
     new_run_id: int
     threshold: float = Field(default=0.05, ge=0, le=1)
+
+
+class GuardrailRequest(BaseModel):
+    configuration: ModelConfigRequest | None = None

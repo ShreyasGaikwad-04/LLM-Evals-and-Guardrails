@@ -3,6 +3,7 @@
 from pydantic import BaseModel, Field
 
 from app.core.config import settings
+from app.prompts.evaluation_prompts import JUDGE_SYSTEM_PROMPT, JUDGE_USER_TEMPLATE
 
 
 class JudgeEvaluation(BaseModel):
@@ -13,7 +14,7 @@ class JudgeEvaluation(BaseModel):
 class JudgeService:
     """Evaluate one answer with a configured judge model when explicitly requested."""
 
-    def evaluate(self, question: str, expected_answer: str, response: str) -> JudgeEvaluation:
+    def evaluate(self, question: str, expected_answer: str, response: str, context: str | None = None) -> JudgeEvaluation:
         if not settings.openai_api_key:
             raise RuntimeError("OPENAI_API_KEY is required to use the LLM judge.")
         from openai import OpenAI
@@ -23,8 +24,8 @@ class JudgeService:
             model=settings.judge_model,
             temperature=0,
             messages=[
-                {"role": "system", "content": "Score the answer from 0 to 1 for correctness against the expected answer. Explain briefly."},
-                {"role": "user", "content": f"Question: {question}\nExpected answer: {expected_answer}\nCandidate answer: {response}"},
+                {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
+                {"role": "user", "content": JUDGE_USER_TEMPLATE.format(question=question, expected_answer=expected_answer, response=response, context=context or "")},
             ],
             response_format=JudgeEvaluation,
         )

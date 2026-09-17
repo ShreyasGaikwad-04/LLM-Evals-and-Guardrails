@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     openai_timeout_seconds: float = 45.0
     judge_model: str = "gpt-4o-mini"
+    backend_url: str = "http://localhost:8000"
 
     model_config = SettingsConfigDict(env_file=ROOT_DIR / ".env", extra="ignore")
 
