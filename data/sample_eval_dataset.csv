@@ -1,0 +1,13 @@
+id,question,expected_answer,context,category
+1,What is the capital of France?,Paris,,factual_qa
+2,What is 12 multiplied by 3?,36,,reasoning
+3,Name the three primary colors in additive light.,Red green and blue,,factual_qa
+4,What does CPU stand for?,Central Processing Unit,,factual_qa
+5,If all roses are flowers and some flowers fade what can be concluded?,Some roses may fade but it is not certain,,reasoning
+6,Summarize: The small team shipped a reliable release after testing.,The team shipped a reliable release after testing.,The small team shipped a reliable release after testing.,summarization
+7,Respond with exactly one word: greet.,Hello,,instruction_following
+8,What gas do plants absorb during photosynthesis?,Carbon dioxide,,factual_qa
+9,What is the next number in 2 4 6 8?,10,,reasoning
+10,Summarize: Clear documentation helps teams maintain software.,Documentation helps teams maintain software.,Clear documentation helps teams maintain software.,summarization
+11,What is the freezing point of water in Celsius?,0 degrees Celsius,,factual_qa
+12,Respond with exactly one word: acknowledge.,Acknowledged,,instruction_following
